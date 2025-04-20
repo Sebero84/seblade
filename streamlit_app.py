@@ -45,4 +45,28 @@ def display_station(station_key, station_label, values):
             I3: {values.get("Cur_I3", "-")} A</p>
             <p><b>Energie:</b> {values.get("Enrg", "-")} kWh | 
             <b>Frequenz:</b> {values.get("Frq", "-")} Hz</p>
-            <p><span><b>Status
+            <p><span><b>Status:</b> {status_html}</span></p>
+        </div>
+
+        <div style="
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: white;
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            margin-left: 20px;
+        ">
+            {power:.2f} kW
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# Anzeige der Stationen mit Dummy-Daten
+for key, label in stations.items():
+    display_station(key, label, measurements)
