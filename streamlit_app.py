@@ -66,7 +66,6 @@ def display_station(station_key, station_label):
     <div style="background-color:{bg_color}; border-radius:12px; padding:20px; margin-bottom:30px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             
-            <!-- Linker Textbereich -->
             <div style="flex: 1; color:black;">
                 <h3 style="text-align:center;">{station_label}</h3>
                 <p><b>Stromstärken:</b> I1: {values.get("Cur_I1", "-")} A | 
@@ -77,7 +76,6 @@ def display_station(station_key, station_label):
                 <p>{status_html}</p>
             </div>
 
-            <!-- Rechter Power-Kreis -->
             <div style="
                 width: 100px;
                 height: 100px;
