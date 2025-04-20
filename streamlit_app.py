@@ -53,12 +53,12 @@ def render_gauge(value):
 
     # CSS für den Fortschrittsbalken
     return f"""
-    <div style="position: relative; width: 100px; height: 100px; border-radius: 50%; background: #f0f0f0; float: right; margin-left: 20px;">
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 18px; color: black;">
-            <b>{value:.2f} kW</b>
-        </div>
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: {percentage}%; height: 100%; border-radius: 50%; background: green;"></div>
-    </div>
+    #<div style="position: relative; width: 100px; height: 100px; border-radius: 50%; background: #f0f0f0; float: right; margin-left: 20px;">
+    #    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 18px; color: black;">
+    #        <b>{value:.2f} kW</b>
+    #    </div>
+    #    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: {percentage}%; height: 100%; border-radius: 50%; background: green;"></div>
+    #</div>
     """
 
 # Funktion zur Anzeige einer Station
