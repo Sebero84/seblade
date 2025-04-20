@@ -13,7 +13,6 @@ bucket = st.secrets["bucket"]
 client = InfluxDBClient(url=url, token=token, org=org)
 query_api = client.query_api()
 
-# Definition der Stationen
 stations = {
     "L1": "Linke Säule #1",
     "L2": "Linke Säule #2",
@@ -25,10 +24,8 @@ stations = {
 
 measurements = ["Power", "Cur_I1", "Cur_I2", "Cur_I3", "Enrg", "Frq", "Status"]
 
-# Auto-Refresh alle 30 Sekunden
 st_autorefresh(interval=30 * 1000, key="auto-refresh")
 
-# Funktion zur Abfrage einzelner Werte
 def get_latest_value(station, measurement):
     query = f'''
     from(bucket: "{bucket}")
@@ -45,7 +42,6 @@ def get_latest_value(station, measurement):
         print(f"Fehler bei {station}_{measurement}: {e}")
     return None
 
-# Funktion zur Anzeige einer Station
 def display_station(station_key, station_label):
     values = {m: get_latest_value(station_key, m) for m in measurements}
     power = values.get("Power", 0)
@@ -58,27 +54,7 @@ def display_station(station_key, station_label):
 
     bg_color = "#59f06a"
 
-    # HTML für Power-Kreis
-    power_circle = f"""
-    <div style="
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        background-color: white;
-        color: black;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 16px;
-        border: 2px solid #ccc;
-        float: right;
-    ">
-        {power:.2f} kW
-    </div>
-    """
-
-    # Quader mit Text links, Kreis rechts
+    # Start HTML-Block (Text-Teil links)
     st.markdown(f"""
     <div style="background-color:{bg_color}; border-radius:12px; padding:20px; margin-bottom:30px; display: flex; justify-content: space-between; align-items: center;">
         <div style="flex: 1; color:black;">
@@ -90,10 +66,26 @@ def display_station(station_key, station_label):
             <b>Frequenz:</b> {values.get("Frq", "-")} Hz</p>
             <p>{status_html}</p>
         </div>
-        <div style="margin-left: 20px;">
-            {power_circle}
+    """, unsafe_allow_html=True)
+
+    # Power-Kreis (rechts, als separater Markdown)
+    st.markdown(f"""
+        <div style="
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: white;
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            border: 2px solid #ccc;
+        ">
+            {power:.2f} kW
         </div>
-    </div>
+    </div> <!-- Hier wird der äußere Flex-Container sauber geschlossen -->
     """, unsafe_allow_html=True)
 
 # Anzeige aller Stationen
