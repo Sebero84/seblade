@@ -73,10 +73,9 @@ def display_station(station_key, station_label):
     else:
         status_html = f'<span><b>Status:</b> {status}</span>'
 
-    # Quader-Hintergrund mit Flexbox-Layout
     bg_color = "#59f06a"
 
-    # Quader mit Messwerten und Gauge nebeneinander
+    # Beginn des Quaders mit Flexbox, Textbereich links
     st.markdown(f"""
     <div style="background-color:{bg_color}; border-radius:12px; padding:20px; margin-bottom:30px; display: flex; align-items: center; justify-content: space-between;">
         <div style="flex-grow: 1; text-align:left; color:black;">
@@ -92,11 +91,15 @@ def display_station(station_key, station_label):
             </div>
             <div style="margin-bottom:15px;">
                 {status_html}
-                {render_gauge(power)}
             </div>
         </div>
-    </div>
     """, unsafe_allow_html=True)
+
+    # → Gauge separat ausgeben (rechts)
+    st.markdown(render_gauge(power), unsafe_allow_html=True)
+
+    # HTML wieder korrekt abschließen
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # Anzeige aller Stationen
 for key, label in stations.items():
