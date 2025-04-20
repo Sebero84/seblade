@@ -74,7 +74,7 @@ def display_station(station_key, station_label):
             I3: {values.get("Cur_I3", "-")} A</p>
             <p><b>Energie:</b> {values.get("Enrg", "-")} kWh | 
             <b>Frequenz:</b> {values.get("Frq", "-")} Hz</p>
-            <p><span><b>Status:</b> {status_html}</span></p>
+            <p><span><b></b> {status_html}</span></p>
             <p><b>Spannung:</b> L1: {volt_l1:.2f} V | 
             L2: {volt_l2:.2f} V | 
             L3: {volt_l3:.2f} V</p>
