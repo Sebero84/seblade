@@ -92,9 +92,7 @@ def display_station(station_key, station_label):
             </div>
             <div style="margin-bottom:15px;">
                 {status_html}
-            </div>
-            <div style="text-align:right;">
-            {render_gauge(power)}
+                {render_gauge(power)}
             </div>
         </div>
     </div>
