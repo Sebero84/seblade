@@ -94,13 +94,9 @@ def display_station(station_key, station_label):
                 {status_html}
             </div>
         </div>
-        <div style="text-align: right;">
-            {render_gauge(power)}
-        </div>
     </div>
     """, unsafe_allow_html=True)
 
 # Anzeige aller Stationen
 for key, label in stations.items():
     display_station(key, label)
-    
