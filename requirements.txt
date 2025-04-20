@@ -1,0 +1,4 @@
+streamlit
+plotly
+influxdb_client
+streamlit_autorefresh
