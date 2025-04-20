@@ -67,14 +67,14 @@ def display_station(station_key, station_label):
     # Quader mit Messwerten und Kreis
     st.markdown(f"""
     <div style="display: flex; align-items: center; background-color:{bg_color}; border-radius:12px; padding:20px; margin-bottom:30px;">
-        <div style="flex: 1; color:black;">
-            <h3 style="text-align:center;">{station_label}</h3>
+        <div style="flex: 1; color:black; text-align: center;">  <!-- Text horizontal zentrieren -->
+            <h3>{station_label}</h3>  <!-- station_label zentriert -->
             <p><b>Stromstärken:</b> I1: {values.get("Cur_I1", "-")} A | 
             I2: {values.get("Cur_I2", "-")} A | 
             I3: {values.get("Cur_I3", "-")} A</p>
             <p><b>Energie:</b> {values.get("Enrg", "-")} kWh | 
             <b>Frequenz:</b> {values.get("Frq", "-")} Hz</p>
-            <p><span><b></b> {status_html}</span></p>
+            <p><span><b>Status:</b> {status_html}</span></p>
             <p><b>Spannung:</b> L1: {volt_l1:.2f} V | 
             L2: {volt_l2:.2f} V | 
             L3: {volt_l3:.2f} V</p>
