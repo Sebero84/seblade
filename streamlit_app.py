@@ -29,6 +29,7 @@ measurements = ["Power", "Cur_I1", "Cur_I2", "Cur_I3", "Enrg", "Frq", "Status"]
 # Auto-Refresh alle 30 Sekunden
 st_autorefresh(interval=30 * 1000, key="auto-refresh")
 
+
 # Funktion zur Abfrage einzelner Werte
 def get_latest_value(station, measurement):
     query = f'''
@@ -46,11 +47,15 @@ def get_latest_value(station, measurement):
         print(f"Fehler bei {station}_{measurement}: {e}")
     return None
 
+
 # Funktion zur Anzeige einer Station
 def display_station(station_key, station_label):
     values = {m: get_latest_value(station_key, m) for m in measurements}
-    power = values.get("Power", 0)
+    power = values.get("Power")
     status = values.get("Status", "-")
+
+    # Power formatieren
+    power_display = f"{power:.2f} kW" if isinstance(power, (int, float)) else "–"
 
     # Farbiger Status-Text bei CHRG
     if status == "CHRG":
@@ -58,24 +63,23 @@ def display_station(station_key, station_label):
     else:
         status_html = f'<span><b>Status:</b> {status}</span>'
 
-    # Quader-Hintergrundfarbe
-    bg_color = "#59f06a"
-
-    # HTML-Block mit Power-Kreis rechts im Quader
+    # Quader HTML
     st.markdown(f"""
-    <div style="background-color:{bg_color}; border-radius:12px; padding:20px; margin-bottom:30px;">
+    <div style="background-color:#59f06a; border-radius:12px; padding:20px; margin-bottom:30px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             
+            <!-- Linker Bereich -->
             <div style="flex: 1; color:black;">
                 <h3 style="text-align:center;">{station_label}</h3>
-                <p><b>Stromstärken:</b> I1: {values.get("Cur_I1", "-")} A | 
-                I2: {values.get("Cur_I2", "-")} A | 
-                I3: {values.get("Cur_I3", "-")} A</p>
-                <p><b>Energie:</b> {values.get("Enrg", "-")} kWh | 
-                <b>Frequenz:</b> {values.get("Frq", "-")} Hz</p>
+                <p><b>Stromstärken:</b> I1: {values.get("Cur_I1", "–")} A | 
+                I2: {values.get("Cur_I2", "–")} A | 
+                I3: {values.get("Cur_I3", "–")} A</p>
+                <p><b>Energie:</b> {values.get("Enrg", "–")} kWh | 
+                <b>Frequenz:</b> {values.get("Frq", "–")} Hz</p>
                 <p>{status_html}</p>
             </div>
 
+            <!-- Rechter Power-Kreis -->
             <div style="
                 width: 100px;
                 height: 100px;
@@ -90,11 +94,12 @@ def display_station(station_key, station_label):
                 border: 2px solid #ccc;
                 margin-left: 20px;
             ">
-                {power:.2f} kW
+                {power_display}
             </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
+
 
 # Anzeige aller Stationen
 for key, label in stations.items():
