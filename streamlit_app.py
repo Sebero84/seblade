@@ -54,18 +54,39 @@ def display_station(station_key, station_label):
 
     bg_color = "#59f06a"
 
-    # Start HTML-Block (Text-Teil links)
     st.markdown(f"""
-    <div style="background-color:{bg_color}; border-radius:12px; padding:20px; margin-bottom:30px; display: flex; justify-content: space-between; align-items: center;">
-        <div style="flex: 1; color:black;">
-            <h3 style="text-align:center;">{station_label}</h3>
-            <p><b>Stromstärken:</b> I1: {values.get("Cur_I1", "-")} A | 
-            I2: {values.get("Cur_I2", "-")} A | 
-            I3: {values.get("Cur_I3", "-")} A</p>
-            <p><b>Energie:</b> {values.get("Enrg", "-")} kWh | 
-            <b>Frequenz:</b> {values.get("Frq", "-")} Hz</p>
-            <p>{status_html}</p>
+    <div style="background-color:{bg_color}; border-radius:12px; padding:20px; margin-bottom:30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            
+            <!-- Linker Textbereich -->
+            <div style="flex: 1; color:black;">
+                <h3 style="text-align:center;">{station_label}</h3>
+                <p><b>Stromstärken:</b> I1: {values.get("Cur_I1", "-")} A | 
+                I2: {values.get("Cur_I2", "-")} A | 
+                I3: {values.get("Cur_I3", "-")} A</p>
+                <p><b>Energie:</b> {values.get("Enrg", "-")} kWh | 
+                <b>Frequenz:</b> {values.get("Frq", "-")} Hz</p>
+                <p>{status_html}</p>
+            </div>
+
+            <!-- Rechter Kreis -->
+            <div style="
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                background-color: white;
+                color: black;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 16px;
+                border: 2px solid #ccc;
+            ">
+                {power:.2f} kW
+            </div>
         </div>
+    </div>
     """, unsafe_allow_html=True)
 
     # Power-Kreis (rechts, als separater Markdown)
