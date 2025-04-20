@@ -23,7 +23,6 @@ stations = {
     "R2": "Rechte Säule #2"
 }
 
-# Messgrößen
 measurements = ["Power", "Cur_I1", "Cur_I2", "Cur_I3", "Enrg", "Frq", "Status"]
 
 # Auto-Refresh alle 30 Sekunden
@@ -46,28 +45,12 @@ def get_latest_value(station, measurement):
         print(f"Fehler bei {station}_{measurement}: {e}")
     return None
 
-# Funktion zur Darstellung der Gauge als visuelle Fortschrittsanzeige
-def render_gauge(value):
-    max_value = 11  # Maximale Kapazität in kW
-    percentage = (value / max_value) * 100  # Prozentualer Anteil des Wertes
-
-    # CSS für den Fortschrittsbalken
-    return f"""
-    <div style="position: relative; width: 100px; height: 100px; border-radius: 50%; background: #f0f0f0; float: right; margin-left: 20px;">
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 18px; color: black;">
-            <b>{value:.2f} kW</b>
-        </div>
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: {percentage}%; height: 100%; border-radius: 50%; background: green;"></div>
-    </div>
-    """
-
 # Funktion zur Anzeige einer Station
 def display_station(station_key, station_label):
     values = {m: get_latest_value(station_key, m) for m in measurements}
     power = values.get("Power", 0)
     status = values.get("Status", "-")
 
-    # Farbiger Status-Text bei CHRG
     if status == "CHRG":
         status_html = f'<span style="color: blue;"><b>Status:</b> {status}</span>'
     else:
@@ -75,31 +58,43 @@ def display_station(station_key, station_label):
 
     bg_color = "#59f06a"
 
-    # Beginn des Quaders mit Flexbox, Textbereich links
+    # HTML für Power-Kreis
+    power_circle = f"""
+    <div style="
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: white;
+        color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 16px;
+        border: 2px solid #ccc;
+        float: right;
+    ">
+        {power:.2f} kW
+    </div>
+    """
+
+    # Quader mit Text links, Kreis rechts
     st.markdown(f"""
-    <div style="background-color:{bg_color}; border-radius:12px; padding:20px; margin-bottom:30px; display: flex; align-items: center; justify-content: space-between;">
-        <div style="flex-grow: 1; text-align:left; color:black;">
-            <h3 style="text-align:center; color:black;">{station_label}</h3>
-            <div style="margin-bottom:15px;">
-                <b>Stromstärken:</b> I1: {values.get("Cur_I1", "-")} A | 
-                I2: {values.get("Cur_I2", "-")} A | 
-                I3: {values.get("Cur_I3", "-")} A
-            </div>
-            <div style="margin-bottom:15px;">
-                <b>Energie:</b> {values.get("Enrg", "-")} kWh | 
-                <b>Frequenz:</b> {values.get("Frq", "-")} Hz
-            </div>
-            <div style="margin-bottom:15px;">
-                {status_html}
-            </div>
+    <div style="background-color:{bg_color}; border-radius:12px; padding:20px; margin-bottom:30px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="flex: 1; color:black;">
+            <h3 style="text-align:center;">{station_label}</h3>
+            <p><b>Stromstärken:</b> I1: {values.get("Cur_I1", "-")} A | 
+            I2: {values.get("Cur_I2", "-")} A | 
+            I3: {values.get("Cur_I3", "-")} A</p>
+            <p><b>Energie:</b> {values.get("Enrg", "-")} kWh | 
+            <b>Frequenz:</b> {values.get("Frq", "-")} Hz</p>
+            <p>{status_html}</p>
         </div>
+        <div style="margin-left: 20px;">
+            {power_circle}
+        </div>
+    </div>
     """, unsafe_allow_html=True)
-
-    # → Gauge separat ausgeben (rechts)
-    st.markdown(render_gauge(power), unsafe_allow_html=True)
-
-    # HTML wieder korrekt abschließen
-    st.markdown("</div>", unsafe_allow_html=True)
 
 # Anzeige aller Stationen
 for key, label in stations.items():
