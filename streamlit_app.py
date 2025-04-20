@@ -48,9 +48,9 @@ def display_station(station_key, station_label, values):
             <p><span><b>Status:</b> {status_html}</span></p>
         </div>
 
-        <div style="width: 100px; height: 100px; border-radius: 50%; background-color: white; color: black; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; border: 2px solid #ccc; margin-left: 20px;">
-            {power:.2f} kW
-        </div>
+    # <div style="width: 100px; height: 100px; border-radius: 50%; background-color: white; color: black; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; border: 2px solid #ccc; margin-left: 20px;">
+    #    {power:.2f} kW
+    # </div>
     </div>
     """, unsafe_allow_html=True)
 
