@@ -70,4 +70,3 @@ def display_station(station_key, station_label, values):
 # Anzeige der Stationen mit Dummy-Daten
 for key, label in stations.items():
     display_station(key, label, measurements)
-    
