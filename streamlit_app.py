@@ -2,10 +2,9 @@ import streamlit as st
 from influxdb_client import InfluxDBClient
 from streamlit_autorefresh import st_autorefresh
 
-# Streamlit-Seiteneinstellungen
 st.set_page_config(page_title="Ladesäulen Übersicht", layout="centered")
 
-# InfluxDB-Verbindung
+# InfluxDB-Konfiguration
 url = st.secrets["url"]
 token = st.secrets["token"]
 org = st.secrets["org"]
@@ -25,12 +24,12 @@ stations = {
 }
 
 # Messgrößen
-measurements = ["Power", "Cur_I1", "Cur_I2", "Cur_I3", "Enrg", "Frq", "Status"]
+measurements = ["Power", "Cur_I1", "Cur_I2", "Cur_I3", "Enrg", "Frq", "Status", "Volt_L1", "Volt_L2", "Volt_L3"]
 
 # Auto-Refresh alle 30 Sekunden
 st_autorefresh(interval=30 * 1000, key="auto-refresh")
 
-# Funktion zur Abfrage der neuesten Werte aus InfluxDB
+# Funktion zur Abfrage einzelner Werte aus der InfluxDB
 def get_latest_value(station, measurement):
     query = f'''
     from(bucket: "{bucket}")
@@ -52,6 +51,9 @@ def display_station(station_key, station_label):
     values = {m: get_latest_value(station_key, m) for m in measurements}
     power = values.get("Power", 0)
     status = values.get("Status", "-")
+    volt_l1 = values.get("Volt_L1", "-")
+    volt_l2 = values.get("Volt_L2", "-")
+    volt_l3 = values.get("Volt_L3", "-")
 
     # Farbiger Status-Text
     if status == "CHRG":
@@ -73,14 +75,16 @@ def display_station(station_key, station_label):
             <p><b>Energie:</b> {values.get("Enrg", "-")} kWh | 
             <b>Frequenz:</b> {values.get("Frq", "-")} Hz</p>
             <p><span><b>Status:</b> {status_html}</span></p>
+            <p><b>Spannung:</b> L1: {volt_l1:.2f} V | 
+            L2: {volt_l2:.2f} V | 
+            L3: {volt_l3:.2f} V</p>
         </div>
         <div style="width: 100px; height: 100px; border-radius: 50%; background-color: white; color: black; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; border: 2px solid #ccc; margin-left: 20px;">
-       {power:.2f} kW
+            {power:.2f} kW
         </div>
-
     </div>
     """, unsafe_allow_html=True)
 
-# Anzeige aller Stationen mit Werten aus der InfluxDB
+# Anzeige der Stationen mit den Werten aus InfluxDB
 for key, label in stations.items():
     display_station(key, label)
