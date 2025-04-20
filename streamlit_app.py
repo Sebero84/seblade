@@ -1,6 +1,20 @@
 import streamlit as st
+from influxdb_client import InfluxDBClient
+from streamlit_autorefresh import st_autorefresh
 
-# Dummy-Daten
+# Streamlit-Seiteneinstellungen
+st.set_page_config(page_title="Ladesäulen Übersicht", layout="centered")
+
+# InfluxDB-Verbindung
+url = st.secrets["url"]
+token = st.secrets["token"]
+org = st.secrets["org"]
+bucket = st.secrets["bucket"]
+
+client = InfluxDBClient(url=url, token=token, org=org)
+query_api = client.query_api()
+
+# Definition der Stationen
 stations = {
     "L1": "Linke Säule #1",
     "L2": "Linke Säule #2",
@@ -10,19 +24,32 @@ stations = {
     "R2": "Rechte Säule #2"
 }
 
-measurements = {
-    "Power": 3.5,  # Dummy Power in kW
-    "Cur_I1": 15.0,  # Dummy Stromstärke 1 in A
-    "Cur_I2": 15.5,  # Dummy Stromstärke 2 in A
-    "Cur_I3": 16.0,  # Dummy Stromstärke 3 in A
-    "Enrg": 3103.95,  # Dummy Energie in kWh
-    "Frq": 50.0,  # Dummy Frequenz in Hz
-    "Status": "AVAL"  # Dummy Status
-}
+# Messgrößen
+measurements = ["Power", "Cur_I1", "Cur_I2", "Cur_I3", "Enrg", "Frq", "Status"]
 
-# Funktion zur Anzeige der Stationen
-def display_station(station_key, station_label, values):
-    # Power Dummy-Wert
+# Auto-Refresh alle 30 Sekunden
+st_autorefresh(interval=30 * 1000, key="auto-refresh")
+
+# Funktion zur Abfrage der neuesten Werte aus InfluxDB
+def get_latest_value(station, measurement):
+    query = f'''
+    from(bucket: "{bucket}")
+    |> range(start: -1h)
+    |> filter(fn: (r) => r["_measurement"] == "{station}_{measurement}")
+    |> last()
+    '''
+    try:
+        tables = query_api.query(query)
+        for table in tables:
+            for record in table.records:
+                return record.get_value()
+    except Exception as e:
+        print(f"Fehler bei {station}_{measurement}: {e}")
+    return None
+
+# Funktion zur Anzeige einer Station
+def display_station(station_key, station_label):
+    values = {m: get_latest_value(station_key, m) for m in measurements}
     power = values.get("Power", 0)
     status = values.get("Status", "-")
 
@@ -54,6 +81,6 @@ def display_station(station_key, station_label, values):
     </div>
     """, unsafe_allow_html=True)
 
-# Anzeige der Stationen mit Dummy-Daten
+# Anzeige aller Stationen mit Werten aus der InfluxDB
 for key, label in stations.items():
-    display_station(key, label, measurements)
+    display_station(key, label)
